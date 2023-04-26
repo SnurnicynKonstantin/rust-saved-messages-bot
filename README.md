@@ -23,3 +23,14 @@
 Базовый источник информации  - https://doc.rust-lang.org/book/, в нем же описана настройка окружения. Могут быть полезны прочие разделы на https://www.rust-lang.org/learn. Мы используем среды разработки от jetbrains: intellijIdea + https://plugins.jetbrains.com/bundles/3-rust-bundle  или Clion + https://plugins.jetbrains.com/plugin/8182-rust
 
 Token for bot = 6109779569:AAHdIGN4v9F_VI6k1tIQ8WsBakfQEywp9Z0
+
+
+lsof -i tcp:8080
+kill -9 PID
+
+cargo watch -q -c -w src/ -x run
+cargo watch -q -c -w tests/ -x "test -q quick_dev -- --nocapture" run
+
+sqlx migrate run
+
+ngrok http 8000
