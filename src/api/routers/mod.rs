@@ -1,25 +1,25 @@
 use axum::{Extension, Router};
 use std::sync::Arc;
 use crate::api::ApiContext;
-use crate::TestService;
+use crate::AccountService;
 
-mod test;
+mod account;
 
 const API_PREFIX: &str = "/api";
 
 pub fn router(
-    test_service: Arc<TestService>,
+    account_service: Arc<AccountService>,
 ) -> Router {
     Router::new()
-        .nest(API_PREFIX, api_router(test_service))
+        .nest(API_PREFIX, api_router(account_service))
 }
 
 fn api_router(
-    test_service: Arc<TestService>,
+    account_service: Arc<AccountService>,
 ) -> Router {
     Router::new()
-        .nest("/test", test::router())
+        .nest("/account", account::router())
         .layer(Extension(Arc::new(ApiContext {
-            test_service,
+            account_service,
         })))
 }

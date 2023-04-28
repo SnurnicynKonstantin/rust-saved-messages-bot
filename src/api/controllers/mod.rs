@@ -1,11 +1,11 @@
-pub use self::test::*;
+pub use self::account::*;
 use http::StatusCode;
 
-mod test;
+mod account;
 
 #[derive(thiserror::Error, Debug)]
 pub enum ControllersError {
-    #[error("Invalid request: `{0}`")]
+    #[error("Invalid requests: `{0}`")]
     WrongInput(String),
 }
 

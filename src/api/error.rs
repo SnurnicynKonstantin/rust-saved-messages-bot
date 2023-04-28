@@ -6,7 +6,7 @@ use axum::{
 use tracing::log;
 
 use crate::api::controllers::ControllersError;
-use crate::services::TestServiceError;
+use crate::services::ServiceError;
 
 /// A common error type that can be used throughout the API.
 ///
@@ -54,8 +54,7 @@ pub enum Error {
     Anyhow(#[from] anyhow::Error),
 
     #[error(transparent)]
-    TestService(#[from] TestServiceError),
-
+    AccountService(#[from] ServiceError),
     #[error(transparent)]
     Controllers(#[from] ControllersError),
 }
@@ -66,7 +65,7 @@ impl Error {
             Self::Sqlx(_)
             | Self::Serde(_)
             | Self::Anyhow(_) => StatusCode::INTERNAL_SERVER_ERROR,
-            Error::TestService(e) => e.status_code(),
+            Error::AccountService(e) => e.status_code(),
             Error::Controllers(e) => e.status_code(),
         }
     }
@@ -78,25 +77,25 @@ impl IntoResponse for Error {
         match self {
             Self::Sqlx(ref e) => {
                 // TODO: we probably want to use `tracing` instead
-                // so that this gets linked to the HTTP request by `TraceLayer`.
+                // so that this gets linked to the HTTP requests by `TraceLayer`.
                 log::error!("SQLx error: {:?}", e);
             }
 
             Self::Serde(ref e) => {
                 // TODO: we probably want to use `tracing` instead
-                // so that this gets linked to the HTTP request by `TraceLayer`.
+                // so that this gets linked to the HTTP requests by `TraceLayer`.
                 log::error!("Serde error: {:?}", e);
             }
 
             Self::Anyhow(ref e) => {
                 // TODO: we probably want to use `tracing` instead
-                // so that this gets linked to the HTTP request by `TraceLayer`.
+                // so that this gets linked to the HTTP requests by `TraceLayer`.
                 log::error!("Generic error: {:?}", e);
             }
 
             // Other errors get mapped normally.
-            Error::TestService(ref e) => {
-                log::error!("Test service error: {:?}", e);
+            Error::AccountService(ref e) => {
+                log::error!("Account service error: {:?}", e);
             }
 
             Error::Controllers(ref e) => {

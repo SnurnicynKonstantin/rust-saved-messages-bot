@@ -1,6 +1,6 @@
 use sqlx::PgPool;
 
-mod test;
+mod account;
 
 #[derive(Clone)]
 pub struct SqlxClient {
