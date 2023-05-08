@@ -52,7 +52,7 @@ impl AccountService {
 
 }
 
-#[derive(thiserror::Error, Debug)]//Move to enum
+#[derive(thiserror::Error, Debug)]
 pub enum ServiceError {
     #[error("Invalid requests: `{0}`")]
     WrongInput(String),

@@ -1,0 +1,5 @@
+kafka_url = "kafka://127.0.0.1:6379"
+
+[http_client]
+api_url = "https://api.apilayer.com/exchangerates_data/convert"
+api_key = "MEnPsCu35NliftxNK0B89qLw98il9akk"

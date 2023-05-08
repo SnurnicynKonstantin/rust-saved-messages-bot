@@ -1,19 +1,24 @@
+extern crate core;
+
 use std::net::SocketAddr;
 
 use std::env;
 use std::sync::Arc;
 use anyhow::{Result};
 use teloxide::{prelude::*};
-use rust_saved_messages_bot::{pool};
+use crate::http_clients::{HttpClient, HttpClientConfig};
 use crate::models::account::Account;
 use crate::services::{AccountService};
 use crate::sqlx_clients::SqlxClient;
+use crate::settings::{Config, pool};
 
 mod models;
 mod api;
 mod sqlx_clients;
 mod services;
 mod telegram;
+mod http_clients;
+mod settings;
 
 const TELEGRAM_MODE: &str = "telegram_mode";
 
@@ -21,20 +26,19 @@ const TELEGRAM_MODE: &str = "telegram_mode";
 async fn main() -> Result<()> {
     let command_line_args: Vec<String> = env::args().collect();
     let mode = command_line_args.get(1);
-
     println!("->> It is alive!");
-
     dotenv::dotenv().expect("Unable to load environment variables from .env file");
 
     //Database
     let db_url = env::var("DATABASE_URL").expect("Unable to read DATABASE_URL env var");
-
     let pool = pool(db_url).await?;
-
     sqlx::migrate!().run(&pool).await?;
-
     let sqlx_client = SqlxClient::new(pool);
 
+    //Services
+    let config_file_name = env::var("CONFIG_FILE").expect("Unable to read CONFIG_FILE env var");
+    let config = Config::new(config_file_name);
+    let http_client = Arc::new(HttpClient::new(config.http_client.clone()));
     let account_service = Arc::new(AccountService::new(sqlx_client.clone()));
 
     if mode.is_some() && TELEGRAM_MODE.eq(mode.unwrap()) {
