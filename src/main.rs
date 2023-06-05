@@ -52,7 +52,7 @@ async fn main() -> Result<()> {
                 .endpoint(telegram::message_handler));
 
         Dispatcher::builder(bot, handler)
-            .dependencies(dptree::deps![account_service.clone()])
+            .dependencies(dptree::deps![account_service.clone(), http_client.clone()])
             .enable_ctrlc_handler()
             .build()
             .dispatch()

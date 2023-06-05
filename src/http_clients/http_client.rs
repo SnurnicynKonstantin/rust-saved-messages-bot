@@ -13,15 +13,15 @@ impl HttpClient {
         Self { client, api_url, api_key, }
     }
 
-    pub async fn get_course(&self, from: String, to: String, amount: i16) -> Result<String> {
+    pub async fn get_course(&self, from: String, to: String, amount: f32) -> Result<f32> {
         self.client
-            .get(format!("{}/?to={to}&from={from}&amount={amount}", self.api_url))
+            .get(format!("{}?to={to}&from={from}&amount={amount}", self.api_url))
             .header(API_KEY, self.api_key.as_str())
             .send()
             .await?
             .json::<ConvertResponse>()
-            .await? // unwraps std::Result<_, reqwest::Error>
+            .await?
             .result
-            .ok_or(anyhow!("No result, there is an an error in request.")) // wraps into std::Result<_, anyhow::Error>
+            .ok_or(anyhow!("No result, there is an error in request."))
     }
 }
