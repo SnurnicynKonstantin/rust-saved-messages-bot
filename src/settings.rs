@@ -3,6 +3,7 @@ use sqlx::PgPool;
 use sqlx::postgres::PgPoolOptions;
 use serde::{Deserialize};
 use crate::HttpClientConfig;
+use crate::KafkaClientConfig;
 
 pub async fn pool(database_path: String) -> Result<PgPool> {
     let pool = PgPoolOptions::new()
@@ -14,7 +15,7 @@ pub async fn pool(database_path: String) -> Result<PgPool> {
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Config {
-    pub kafka_url: String,
+    pub kafka_client: KafkaClientConfig,
     pub http_client: HttpClientConfig,
 }
 

@@ -6,7 +6,9 @@ use std::env;
 use std::sync::Arc;
 use anyhow::{Result};
 use teloxide::{prelude::*};
+use kafka::producer::{Producer, Record};
 use crate::http_clients::{HttpClient, HttpClientConfig};
+use crate::kafka_clients::{KafkaClient, KafkaClientConfig};
 use crate::models::account::Account;
 use crate::services::{AccountService};
 use crate::sqlx_clients::SqlxClient;
@@ -19,6 +21,7 @@ mod services;
 mod telegram;
 mod http_clients;
 mod settings;
+mod kafka_clients;
 
 const TELEGRAM_MODE: &str = "telegram_mode";
 
@@ -39,6 +42,7 @@ async fn main() -> Result<()> {
     let config_file_name = env::var("CONFIG_FILE").expect("Unable to read CONFIG_FILE env var");
     let config = Config::new(config_file_name);
     let http_client = Arc::new(HttpClient::new(config.http_client.clone()));
+    let kafka_client = KafkaClient::new(config.kafka_client.clone());
     let account_service = Arc::new(AccountService::new(sqlx_client.clone()));
 
     if mode.is_some() && TELEGRAM_MODE.eq(mode.unwrap()) {
@@ -52,7 +56,7 @@ async fn main() -> Result<()> {
                 .endpoint(telegram::message_handler));
 
         Dispatcher::builder(bot, handler)
-            .dependencies(dptree::deps![account_service.clone(), http_client.clone()])
+            .dependencies(dptree::deps![account_service.clone(), http_client.clone(), kafka_client])
             .enable_ctrlc_handler()
             .build()
             .dispatch()
