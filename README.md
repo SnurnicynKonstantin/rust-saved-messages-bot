@@ -1,4 +1,5 @@
 # SAVED MESSAGES BOT
+![Screen 1](screens/Screenshot1.png)
 This bot helps to determine current USD and EUR cours related to RUB. Name of bot in Telegram is https://t.me/rust_saved_messages_bot
 <hr>
 
@@ -28,7 +29,7 @@ In **REST API mode** allows you make requests to application for receive data fr
 
 ## 👩‍💻 Telegram bot responsibility
 
-![Screen 1](screens/Screenshot1.png)
+![Screen 2](screens/Screenshot2.png)
 
 ## ⚙️ Configuration
 
@@ -41,4 +42,4 @@ Application use `.env` for determine url to DB, Token for score provider and nam
 
 ## 💻 Screenshots
 
-![Screen 2](screens/Screenshot2.png)
+![Screen 3](screens/Screenshot3.png)
