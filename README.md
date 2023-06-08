@@ -28,7 +28,7 @@ In **REST API mode** allows you make requests to application for receive data fr
 
 ## 👩‍💻 Telegram bot responsibility
 
-![Screen 1](./Screens/Screenshot 1.png)
+![Screen 1](./Screens/Screenshot1.png)
 
 ## ⚙️ Configuration
 
@@ -41,4 +41,4 @@ Application use `.env` for determine url to DB, Token for score provider and nam
 
 ## 💻 Screenshots
 
-![Screen 2](./Screens/Screenshot 2.png)
+![Screen 2](./Screens/Screenshot2.png)
