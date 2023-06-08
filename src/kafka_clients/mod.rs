@@ -8,7 +8,6 @@ pub struct KafkaClientConfig {
     pub feedback_topic: String,
 }
 
-// #[derive(Copy, Clone)]
 pub struct KafkaClient {
     client: kafka::producer::Producer,
     feedback_topic: String,

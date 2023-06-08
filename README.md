@@ -1,38 +1,44 @@
-Разработать бот для телеграм.
+# SAVED MESSAGES BOT
+This bot helps to determine current USD and EUR cours related to RUB. Name of bot in Telegram is https://t.me/rust_saved_messages_bot
+<hr>
 
-Бот будет записной книжкой пользователя, аналогично встроенному чату Saved Messages. Боту достаточно уметь работать только с текстовыми сообщениями.
+## 🛠 How to run locally
+For run locally you need install PostgreSQL DB and Kafka.
 
-Фича бота - альтернативная навигация по истории сообщений.
-Помимо прокрутки экрана, бот позволит пролистывать историю кнопками "назад" и "вперед" под особым сообщением, которое бот отправит по команде /history. При прокрутке кнопками бот не должен создавать новые сообщения для пользователя, а обновлять одно сообщение in-place.
+Or you can use docker. For it you need run next command: 
+```
+docker-compose up -d
+```
 
-Как делать
+Will be started up: 
 
-Телеграм  
-Используй доку https://core.telegram.org/bots/api
-Не используй готовый фреймворк на подобие telegram-rs, опиши необходимые модели сообщений самостоятельно, сделай свою реализацию обмена сообщениями.
-Если под рукой нет постоянного внешнего IP - используй лонг-поллинг (https://core.telegram.org/bots/api#getting-updates). Если IP есть дома или на сервере, и хочешь усложнить задачу - сделай через webhook.
+- PostgreSQL on 16433 port 
+- Kafka cluster on 29092 port 
+- Kafka UI on 8080 port
 
-Хранение данных   
-Если хочешь усложнить - используй postgres в докере через https://github.com/launchbadge/sqlx.
+After it you can run application.
 
-Не вызывай и не кидай паники в рантайме, только при старте приложения.  
-Собирай ошибки и логируй через eprintln!().
+## 💡 Application modes
 
-Твоя задача - довести код до production ready, насколько позволяет время.
+Application has two modes: `Telegram mode` and `REST API mode`. You can run application with only one more per time. For Telegram dode you need use `-- telegram_mode` flag.
 
-Базовый источник информации  - https://doc.rust-lang.org/book/, в нем же описана настройка окружения. Могут быть полезны прочие разделы на https://www.rust-lang.org/learn. Мы используем среды разработки от jetbrains: intellijIdea + https://plugins.jetbrains.com/bundles/3-rust-bundle  или Clion + https://plugins.jetbrains.com/plugin/8182-rust
+In **Telegram mode** application will listen messages from Telegram bot. You can use bot for registration, determine courses or send feedback to support.
 
-Token for bot = 6109779569:AAHdIGN4v9F_VI6k1tIQ8WsBakfQEywp9Z0
+In **REST API mode** allows you make requests to application for receive data from BD. For now you can receive only data about users.
+
+## 👩‍💻 Telegram bot responsibility
+
+![Screen 1](./Screens/Screenshot 1.png)
+
+## ⚙️ Configuration
+
+There are two ways for configure application: `.env` and `application.toml` configuration.
 
 
-lsof -i tcp:8080
-kill -9 PID
+Application use `.env` for determine url to DB, Token for score provider and name of configuration file.
 
-cargo watch -q -c -w src/ -x run
-cargo watch -q -c -w tests/ -x "test -q quick_dev -- --nocapture" run
+`application.toml` configuration file used by application for store properties for Kafka and Http clients.
 
-sqlx migrate run
+## 💻 Screenshots
 
-ngrok http 8000
-
--- telegram_mode
+![Screen 2](./Screens/Screenshot 2.png)
