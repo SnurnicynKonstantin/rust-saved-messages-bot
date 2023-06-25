@@ -3,7 +3,7 @@ extern crate core;
 use std::net::SocketAddr;
 
 use std::env;
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 use anyhow::{Result};
 use teloxide::{prelude::*};
 use kafka::producer::{Producer, Record};
@@ -42,7 +42,7 @@ async fn main() -> Result<()> {
     let config_file_name = env::var("CONFIG_FILE").expect("Unable to read CONFIG_FILE env var");
     let config = Config::new(config_file_name);
     let http_client = Arc::new(HttpClient::new(config.http_client.clone()));
-    // let kafka_client = KafkaClient::new(config.kafka_client.clone());
+    let kafka_client = Arc::new(Mutex::new(KafkaClient::new(config.kafka_client.clone())));
     let account_service = Arc::new(AccountService::new(sqlx_client.clone()));
 
     if mode.is_some() && TELEGRAM_MODE.eq(mode.unwrap()) {
@@ -56,7 +56,7 @@ async fn main() -> Result<()> {
                 .endpoint(telegram::message_handler));
 
         Dispatcher::builder(bot, handler)
-            .dependencies(dptree::deps![account_service.clone(), http_client.clone()])
+            .dependencies(dptree::deps![account_service.clone(), http_client.clone(), kafka_client.clone()])
             .enable_ctrlc_handler()
             .build()
             .dispatch()

@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 use anyhow::{anyhow, Result};
 use teloxide::{utils::command::BotCommands, prelude::*};
 use teloxide::types::Me;
@@ -12,10 +12,11 @@ pub async fn message_handler(
     me: Me,
     account_service: Arc<AccountService>,
     http_client: Arc<HttpClient>,
+    kafka_client: Arc<Mutex<KafkaClient>>,
 ) -> Result<()> {
     match BotCommands::parse(msg.text().unwrap(), me.username()) {
         Ok(command) => {
-            process(command, msg, bot, account_service, http_client).await?;
+            process(command, msg, bot, account_service, http_client, kafka_client).await?;
         }
         Err(_) => {
             println!("Error happened!");
@@ -30,6 +31,7 @@ async fn process(
     bot: Bot,
     account_service: Arc<AccountService>,
     http_client: Arc<HttpClient>,
+    kafka_client: Arc<Mutex<KafkaClient>>,
 ) -> Result<()> {
     let chat_id = msg.chat.id;
 
@@ -54,6 +56,7 @@ async fn process(
             }
         },
         Command::Feedback(text) => {
+            kafka_client.lock().unwrap().send_feedback(&text);
             bot.send_message(chat_id, format!("Feedback is: {text}")).await?
         },
         Command::Help => bot.send_message(chat_id, Command::descriptions().to_string()).await?,
